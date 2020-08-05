@@ -46,18 +46,6 @@ function App() {
     window.location.reload()
   }
 
-  const handleDelete = (evt) => {
-    evt.preventDefault();
-    removeTodo({ variables: { id: evt.target.className }})
-    window.location.reload()
-  }
-
-  const handleComplete = (evt) => {
-    evt.preventDefault();
-    updateTodo({ variables: { id: evt.target.className }})
-    window.location.reload()
-  }
-
   // useEffect( () => {
   //   console.log("data changed")
   // }, [ data ])
@@ -67,21 +55,35 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div className="app">
       <h3>Create New Todo</h3>
       <form onSubmit={handleSubmit}>
         <input className="form-control" type="text" placeholder="Enter todo" onChange={e => setTodoText(e.target.value)}></input>
         <button className="btn btn-primary px-5 my-2" type="submit">Submit</button>
       </form>
 
-      <h2>Todos</h2>
+      <h3>Todos</h3>
       <ul>
         {data.todos.map(todo => {
           return (
           <li key={todo.id}>
-            <span className={todo.completed ? "complete" : "pending"}>{todo.text}</span>
-            <button className={todo.id} onClick={handleDelete}>Remove todo</button>
-            <button className={todo.id} onClick={handleComplete}>Completed</button>
+            <span className={todo.completed ? "done" : "pending"}>{todo.text}</span>
+            <button className="btn btn-sm btn-danger rounded-circle float-right" 
+              onClick={evt => {
+                evt.preventDefault();
+                removeTodo({ variables: { id: todo.id }})
+                window.location.reload()
+              }}>X</button>
+            <button className={`btn btn-sm float-right ${todo.completed ? "btn-success" : "btn-info"}`} 
+              onClick={evt => {
+                evt.preventDefault();
+                if (!todo.completed) {
+                  updateTodo({ variables: { id: todo.id }})
+                  window.location.reload()
+                }
+              }}>
+              {todo.completed ? <span>Completed</span> : <span>Not completed</span>}
+            </button>
           </li>
           )   
         })}
